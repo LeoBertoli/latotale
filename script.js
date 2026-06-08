@@ -1,110 +1,171 @@
-:root {
-    --orange: #E57C23;
-    --red: #D11A2A;
-    --blue: #1A5276;
-    --bg-dark: #0a0a0a;
-    --bg-surface: #141414;
-    --text-light: #ffffff;
-    --text-dim: #888888;
-    --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+/**
+ * LA TOTALE - Engine de Interação 3D
+ */
+
+let scene, camera, renderer, carModel;
+const container = document.querySelector('#canvas-container');
+
+function init3D() {
+    // 1. Cena e Câmera
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1, 8);
+
+    // 2. Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    container.appendChild(renderer.domElement);
+
+    // 3. Iluminação de Estúdio
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2);
+    mainLight.position.set(5, 10, 7);
+    scene.add(mainLight);
+
+    const rimLight = new THREE.SpotLight(0xffffff, 4);
+    rimLight.position.set(-5, 5, -5);
+    scene.add(rimLight);
+
+    loadCarModel();
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+function loadCarModel() {
+    const loader = new GLTFLoader();
+    
+    // Substitua 'assets/carro.glb' pelo caminho real do seu modelo
+    loader.load('assets/carro.glb', 
+        (gltf) => {
+            carModel = gltf.scene;
+            
+            // Centralização automática
+            const box = new THREE.Box3().setFromObject(carModel);
+            const center = box.getCenter(new THREE.Vector3());
+            carModel.position.sub(center);
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-light);
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
-    line-height: 1.6;
+            scene.add(carModel);
+            setupScrollAnimations();
+            hideLoader();
+        },
+        undefined,
+        (error) => {
+            console.warn('Modelo 3D não encontrado. Gerando placeholder técnico...');
+            createPlaceholderCar();
+            hideLoader();
+        }
+    );
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-/* Loader */
-#loader {
-    position: fixed; inset: 0; background: #000; z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
-}
-.spinner {
-    width: 40px; height: 40px; border: 2px solid #222;
-    border-top-color: var(--orange); border-radius: 50%;
-    animation: spin 1s linear infinite; margin-bottom: 15px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Header */
-header {
-    position: fixed; top: 0; width: 100%; z-index: 1000; padding: 25px 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-}
-nav { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 1.4rem; font-weight: 900; letter-spacing: 2px; }
-.orange { color: var(--orange); }
-.nav-links { display: flex; list-style: none; gap: 35px; }
-.nav-links a {
-    color: var(--text-dim); text-decoration: none; font-size: 0.8rem;
-    text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
-}
-.nav-links a:hover { color: var(--text-light); }
-
-.btn-cta {
-    background: var(--orange); color: #fff; padding: 12px 28px;
-    border-radius: 2px; text-decoration: none; font-weight: 700;
-    font-size: 0.75rem; letter-spacing: 1px; transition: var(--transition);
-}
-.btn-cta:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(229, 124, 35, 0.3); }
-
-/* Hero */
-#hero { height: 250vh; position: relative; }
-#canvas-container { position: sticky; top: 0; width: 100%; height: 100vh; z-index: 1; }
-.hero-overlay {
-    position: absolute; top: 0; width: 100%; height: 100vh;
-    display: flex; align-items: center; z-index: 2; pointer-events: none;
-}
-h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; line-height: 0.9; }
-.outline { color: transparent; -webkit-text-stroke: 1px #fff; }
-.sub-hero { font-size: 1.1rem; color: var(--text-dim); max-width: 500px; margin: 20px 0; }
-.scroll-hint { font-size: 0.7rem; letter-spacing: 4px; color: var(--orange); margin-top: 40px; }
-
-/* Sections */
-section { padding: 120px 0; background: var(--bg-dark); }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.tag { color: var(--orange); font-weight: 700; font-size: 0.75rem; letter-spacing: 3px; }
-h2 { font-size: 2.8rem; margin: 20px 0; font-weight: 800; }
-.stats { display: flex; gap: 40px; margin-top: 40px; }
-.stat-item { font-weight: 700; font-size: 1.1rem; }
-
-.image-placeholder {
-    height: 500px; background: #1a1a1a; border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid #222; position: relative;
+function createPlaceholderCar() {
+    carModel = new THREE.Group();
+    
+    // Criamos várias peças para simular a reconstrução
+    for(let i = 0; i < 15; i++) {
+        const geometry = new THREE.BoxGeometry(Math.random() * 2, 0.5, 1);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0x333333, 
+            metalness: 0.9, 
+            roughness: 0.1 
+        });
+        const part = new THREE.Mesh(geometry, material);
+        
+        // Posição final (montada)
+        part.userData.originalPos = {
+            x: (Math.random() - 0.5) * 2,
+            y: (Math.random() - 0.5) * 2,
+            z: (Math.random() - 0.5) * 2
+        };
+        
+        carModel.add(part);
+    }
+    
+    scene.add(carModel);
+    setupScrollAnimations();
 }
 
-/* Services */
-.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px; }
-.service-card {
-    background: var(--bg-surface); padding: 50px; border-radius: 4px;
-    position: relative; transition: var(--transition);
+function setupScrollAnimations() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1.2,
+        }
+    });
+
+    // Rotação cinematográfica
+    tl.to(carModel.rotation, { y: Math.PI * 2, ease: "none" }, 0);
+
+    // Lógica de Reconstrução das Peças
+    carModel.traverse((child) => {
+        if (child.isMesh) {
+            // Estado inicial: Peças espalhadas e invisíveis
+            const scatterX = (Math.random() - 0.5) * 15;
+            const scatterY = (Math.random() - 0.5) * 15;
+            const scatterZ = (Math.random() - 0.5) * 15;
+
+            gsap.set(child.position, { x: scatterX, y: scatterY, z: scatterZ });
+            gsap.set(child.material, { opacity: 0, transparent: true });
+
+            // Animação para posição original (0,0,0 relativo ao grupo)
+            tl.to(child.position, {
+                x: 0, y: 0, z: 0,
+                ease: "power3.inOut"
+            }, 0);
+
+            tl.to(child.material, {
+                opacity: 1,
+                duration: 0.4
+            }, 0.2);
+        }
+    });
+
+    // Fade out do texto hero
+    gsap.to(".hero-overlay", {
+        scrollTrigger: {
+            trigger: "#hero",
+            start: "20% top",
+            end: "60% top",
+            scrub: true
+        },
+        opacity: 0,
+        y: -100
+    });
 }
-.service-card:hover { transform: translateY(-10px); background: #1f1f1f; }
-.card-accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
-.orange-bg { background: var(--orange); }
-.red-bg { background: var(--red); }
-.blue-bg { background: var(--blue); }
 
-/* Contact */
-.contact-card { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
-.contact-info { padding: 60px; }
-.contact-list { list-style: none; margin: 40px 0; }
-.contact-list li { margin-bottom: 20px; color: var(--text-dim); }
-.map-container { background: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 400px; }
-.map-link { color: var(--orange); text-decoration: none; font-size: 0.8rem; border: 1px solid var(--orange); padding: 10px 20px; margin-top: 20px; display: inline-block; }
-
-footer { padding: 60px 0; text-align: center; color: #444; font-size: 0.8rem; border-top: 1px solid #111; }
-
-@media (max-width: 768px) {
-    .grid-2, .contact-card { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-    h1 { font-size: 3.5rem; }
+function hideLoader() {
+    gsap.to("#loader", { 
+        opacity: 0, 
+        duration: 1, 
+        onComplete: () => document.getElementById('loader').style.display = 'none' 
+    });
 }
+
+// Loop de Renderização
+function animate() {
+    requestAnimationFrame(animate);
+    if (carModel) {
+        // Movimento sutil de flutuação
+        carModel.position.y += Math.sin(Date.now() * 0.002) * 0.0005;
+    }
+    renderer.render(scene, camera);
+}
+
+// Redimensionamento Responsivo
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+init3D();
+animate();
