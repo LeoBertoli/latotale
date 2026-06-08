@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Totale | Funilaria, Pintura e Performance em Campinas</title>
-    <meta name="description" content="Especialista em Land Rover, Porsche e multimarcas em Campinas. Mais de 130 avaliações 4.8 no Google. Qualidade e transparência absoluta.">
+    <title>La Totale | Funilaria e Pintura de Alta Performance em Campinas</title>
+    <meta name="description" content="Especialista em funilaria e pintura multimarcas em Campinas/SP. Qualidade premium, transparência e mais de 130 avaliações 4.8 no Google.">
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
 
-    <!-- GSAP (Bibliotecas de Animação) -->
+    <!-- Bibliotecas de Performance -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-    <!-- Configuração de Módulos Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -28,105 +26,105 @@
 </head>
 <body>
 
-    <!-- Loader de Entrada -->
     <div id="loader">
         <div class="loader-content">
             <div class="spinner"></div>
-            <p>LA TOTALE <span class="orange">|</span> ENGENHARIA AUTOMOTIVA</p>
+            <p>LA TOTALE <span class="orange">|</span> FUNILARIA E PINTURA</p>
         </div>
     </div>
 
     <header>
         <nav class="container">
-            <div class="logo">
-                <span class="orange">LA</span> TOTALE
+            <!-- Logo Reconstruído em 4K via CSS/Vetor -->
+            <div class="logo-container">
+                <div class="logo-strokes">
+                    <span class="stroke s-orange"></span>
+                    <span class="stroke s-red"></span>
+                    <span class="stroke s-blue"></span>
+                </div>
+                <div class="logo-text">LA TOTALE</div>
             </div>
+
             <ul class="nav-links">
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#servicos">Serviços</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
-            <a href="https://wa.me/551937585858" target="_blank" class="btn-cta">
-                AGENDAR CONSULTA
+
+            <a href="https://wa.me/551937585858" target="_blank" class="btn-cta-header">
+                (19) 3758-5858
             </a>
         </nav>
     </header>
 
     <main>
-        <!-- Hero Section com 3D -->
+        <!-- Hero Section -->
         <section id="hero">
             <div id="canvas-container"></div>
             <div class="hero-overlay">
                 <div class="container">
-                    <h1 class="reveal-text">PRECISÃO QUE <br><span class="outline">RECONSTRÓI</span></h1>
-                    <p class="sub-hero">Especialistas em Land Rover, Porsche e veículos multimarcas de alta performance.</p>
-                    <div class="scroll-hint">ROLE PARA RECONSTRUIR</div>
+                    <h1 class="reveal-text">NOVO <span class="text-red">DE</span> <span class="text-blue">NOVO</span></h1>
+                    <p class="sub-hero">A referência em restauração automotiva em Campinas para veículos nacionais e importados.</p>
+                    <div class="scroll-hint">SCROLL PARA RECONSTRUIR</div>
                 </div>
             </div>
         </section>
 
-        <!-- Seção Quem Somos -->
+        <!-- Seção Sobre -->
         <section id="sobre">
             <div class="container grid-2">
                 <div class="content-box">
-                    <span class="tag">CONFIANÇA E TRADIÇÃO</span>
-                    <h2>Excelência Comprovada em Campinas</h2>
-                    <p>Com uma trajetória sólida, a <strong>La Totale</strong> é referência em funilaria e pintura de alto padrão. Atendemos desde SUVs robustos e veículos de luxo até carros nacionais e importados do dia a dia.</p>
-                    <p>Nossa reputação é construída sobre <strong>transparência total</strong> e rigor técnico. Com mais de <strong>130 avaliações excelentes no Google (Nota 4.8)</strong>, nossa equipe de profissionais altamente qualificados garante a entrega da perfeição original.</p>
+                    <span class="tag">QUALIDADE GARANTIDA</span>
+                    <h2>Excelência em cada detalhe.</h2>
+                    <p>A <strong>La Totale</strong> é sinônimo de tradição e tecnologia em Campinas. Somos especialistas em devolver a estética original a veículos multimarcas, combinando processos artesanais com o que há de mais moderno em reparação.</p>
+                    <p>Com mais de <strong>130 avaliações 4.8 estrelas no Google</strong>, nosso compromisso é com a transparência absoluta e a entrega de um serviço impecável, garantindo que seu carro saia da nossa oficina "novo de novo".</p>
                     <div class="stats">
-                        <div class="stat-item"><span class="orange">4.8/5</span> no Google</div>
-                        <div class="stat-item"><span class="orange">+130</span> Avaliações Reais</div>
+                        <div class="stat-item"><span class="text-orange">4.8</span> Google</div>
+                        <div class="stat-item"><span class="text-red">+130</span> Avaliações</div>
                     </div>
                 </div>
-                <div class="image-placeholder">
-                    <!-- Espaço para foto real da oficina -->
-                    <div class="img-overlay">QUALIDADE GARANTIDA</div>
+                <div class="image-container-premium">
+                    <!-- Aqui você deve salvar a imagem da pistola de pintura como 'pintura.png' -->
+                    <div class="main-image" style="background-image: url('pintura.png');"></div>
+                    <div class="image-accent-blue"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Seção Serviços -->
+        <!-- Serviços Focados -->
         <section id="servicos">
             <div class="container">
-                <h2 class="text-center">SERVIÇOS ESPECIALIZADOS</h2>
+                <h2 class="text-center">NOSSAS ESPECIALIDADES</h2>
                 <div class="services-grid">
-                    <div class="service-card">
-                        <div class="card-accent orange-bg"></div>
+                    <div class="service-card border-orange">
+                        <div class="card-number">01</div>
                         <h3>Funilaria de Precisão</h3>
-                        <p>Recuperação estrutural com alinhamento a laser e gabaritos originais.</p>
+                        <p>Recuperação estrutural e de lataria utilizando gabaritos e técnicas que preservam a integridade do veículo.</p>
                     </div>
-                    <div class="service-card">
-                        <div class="card-accent red-bg"></div>
-                        <h3>Pintura High-End</h3>
-                        <p>Laboratório de cores próprio para fidelidade absoluta ao padrão de fábrica.</p>
-                    </div>
-                    <div class="service-card">
-                        <div class="card-accent blue-bg"></div>
-                        <h3>Mecânica e Performance</h3>
-                        <p>Manutenção preventiva e corretiva especializada em motores de alto rendimento.</p>
+                    <div class="service-card border-red">
+                        <div class="card-number">02</div>
+                        <h3>Pintura de Alta Performance</h3>
+                        <p>Laboratório de cores próprio e cabine de pintura de última geração para um acabamento de fábrica.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contato e Localização -->
+        <!-- Localização -->
         <section id="contato">
             <div class="container">
-                <div class="contact-card">
+                <div class="contact-wrapper">
                     <div class="contact-info">
-                        <h2>VISITE NOSSA UNIDADE</h2>
-                        <ul class="contact-list">
-                            <li><strong>Endereço:</strong> Av. Dr. Antônio Carlos Couto de Barros, 2400 - Jardim Conceição, Campinas - SP</li>
-                            <li><strong>WhatsApp:</strong> (19) 3758-5858</li>
-                            <li><strong>Horário:</strong> Seg a Sex: 08:00 às 18:00</li>
-                        </ul>
-                        <a href="https://wa.me/551937585858" class="btn-cta orange-bg full-width">INICIAR ORÇAMENTO VIA WHATSAPP</a>
+                        <h2>VISITE NOSSA OFICINA</h2>
+                        <p>Av. Dr. Antônio Carlos Couto de Barros, 2400<br>Jardim Conceição, Campinas - SP</p>
+                        <p class="whatsapp-link">WhatsApp: (19) 3758-5858</p>
+                        <a href="https://wa.me/551937585858" class="btn-cta orange-bg">SOLICITAR ORÇAMENTO</a>
                     </div>
-                    <div class="map-container">
-                        <div id="google-map-placeholder">
-                            <p>MAPA DE LOCALIZAÇÃO</p>
-                            <a href="https://maps.google.com" target="_blank" class="map-link">VER NO GOOGLE MAPS</a>
-                        </div>
+                    <div class="map-box">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.247547376046!2d-47.0016574!3d-22.8916667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c8cf4984000001%3A0x464738739118e61!2sAv.%20Dr.%20Ant%C3%B4nio%20Carlos%20Couto%20de%20Barros%2C%202400%20-%20Jardim%20Concei%C3%A7%C3%A3o%20(Sousas)%2C%20Campinas%20-%20SP%2C%2013105-000!5e0!3m2!1spt-BR!2sbr!4v1700000000000" 
+                            width="100%" height="100%" style="border:0; filter: grayscale(1) invert(1) opacity(0.8);" allowfullscreen="" loading="lazy">
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -135,7 +133,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 La Totale Funilaria e Pintura. Excelência Automotiva em Campinas.</p>
+            <p>LA TOTALE - CAMPINAS/SP. #NOVODENOVO</p>
         </div>
     </footer>
 
