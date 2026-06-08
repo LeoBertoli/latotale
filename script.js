@@ -1,134 +1,110 @@
-/**
- * LA TOTALE - High Performance Interaction Script
- * Engine: Three.js + GSAP ScrollTrigger
- */
-
-// 1. Configuração da Cena Three.js
-const canvas = document.querySelector('#car-canvas');
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-// Iluminação Estilo Estúdio Porsche
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-const topLight = new THREE.DirectionalLight(0xffffff, 2);
-topLight.position.set(0, 10, 0);
-scene.add(topLight);
-
-const rimLight = new THREE.SpotLight(0xffffff, 5);
-rimLight.position.set(5, 5, 5);
-scene.add(rimLight);
-
-// Placeholder para o Carro (Substituir pelo seu .glb)
-// No modelo real, cada peça (capô, portas, etc) deve ser um Mesh separado
-const carGroup = new THREE.Group();
-scene.add(carGroup);
-
-// Simulação de peças do carro (BoxGeometry como placeholder)
-const parts = [];
-for(let i = 0; i < 5; i++) {
-    const geometry = new THREE.BoxGeometry(2, 0.5, 1);
-    const material = new THREE.MeshStandardMaterial({ 
-        color: 0x333333, 
-        metalness: 1, 
-        roughness: 0.5 
-    });
-    const part = new THREE.Mesh(geometry, material);
-    
-    // Posição inicial "desmontada"
-    part.position.set(Math.random() * 5 - 2.5, Math.random() * 5, Math.random() * 5 - 2.5);
-    part.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-    
-    carGroup.add(part);
-    parts.push(part);
+:root {
+    --orange: #E57C23;
+    --red: #D11A2A;
+    --blue: #1A5276;
+    --bg-dark: #0a0a0a;
+    --bg-surface: #141414;
+    --text-light: #ffffff;
+    --text-dim: #888888;
+    --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-camera.position.z = 8;
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-// 2. GSAP & ScrollTrigger - A Mágica da Reconstrução
-gsap.registerPlugin(ScrollTrigger);
-
-const tl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1,
-    }
-});
-
-// Animação de Reconstrução
-parts.forEach((part, index) => {
-    tl.to(part.position, {
-        x: 0,
-        y: index * 0.6 - 1, // Alinha as peças verticalmente no centro
-        z: 0,
-        ease: "power2.inOut"
-    }, 0);
-
-    tl.to(part.rotation, {
-        x: 0,
-        y: 0,
-        z: 0,
-        ease: "power2.inOut"
-    }, 0);
-
-    // Mudança de material: De fosco/danificado para brilho espelhado
-    tl.to(part.material, {
-        roughness: 0.1,
-        metalness: 1,
-        color: "#d1d1d1" // Prata cromado
-    }, 0.5);
-});
-
-// Rotação contínua do grupo para visualização 360
-tl.to(carGroup.rotation, { y: Math.PI * 2 }, 0);
-
-// 3. Animações de Interface
-gsap.from(".reveal-text", {
-    y: 100,
-    opacity: 0,
-    duration: 1.5,
-    ease: "power4.out",
-    delay: 0.5
-});
-
-// 4. Loader Logic
-window.addEventListener('load', () => {
-    const loader = document.getElementById('loader');
-    gsap.to(".progress", { 
-        width: "100%", 
-        duration: 1, 
-        onComplete: () => {
-            gsap.to(loader, { opacity: 0, duration: 0.5, onComplete: () => loader.style.display = 'none' });
-        } 
-    });
-});
-
-// 5. Resize Handler
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// Render Loop
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
 }
-animate();
 
-/** 
- * NOTA PARA O DESENVOLVEDOR:
- * Para implementar o modelo real:
- * 1. Use o GLTFLoader do Three.js.
- * 2. No callback 'onLoad', itere sobre as 'children' do modelo.
- * 3. Armazene as posições originais (as 'montadas') em variáveis.
- * 4. Use o GSAP para interpolar entre uma posição 'offset' e a original.
- */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* Loader */
+#loader {
+    position: fixed; inset: 0; background: #000; z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
+}
+.spinner {
+    width: 40px; height: 40px; border: 2px solid #222;
+    border-top-color: var(--orange); border-radius: 50%;
+    animation: spin 1s linear infinite; margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Header */
+header {
+    position: fixed; top: 0; width: 100%; z-index: 1000; padding: 25px 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+}
+nav { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.4rem; font-weight: 900; letter-spacing: 2px; }
+.orange { color: var(--orange); }
+.nav-links { display: flex; list-style: none; gap: 35px; }
+.nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
+}
+.nav-links a:hover { color: var(--text-light); }
+
+.btn-cta {
+    background: var(--orange); color: #fff; padding: 12px 28px;
+    border-radius: 2px; text-decoration: none; font-weight: 700;
+    font-size: 0.75rem; letter-spacing: 1px; transition: var(--transition);
+}
+.btn-cta:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(229, 124, 35, 0.3); }
+
+/* Hero */
+#hero { height: 250vh; position: relative; }
+#canvas-container { position: sticky; top: 0; width: 100%; height: 100vh; z-index: 1; }
+.hero-overlay {
+    position: absolute; top: 0; width: 100%; height: 100vh;
+    display: flex; align-items: center; z-index: 2; pointer-events: none;
+}
+h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; line-height: 0.9; }
+.outline { color: transparent; -webkit-text-stroke: 1px #fff; }
+.sub-hero { font-size: 1.1rem; color: var(--text-dim); max-width: 500px; margin: 20px 0; }
+.scroll-hint { font-size: 0.7rem; letter-spacing: 4px; color: var(--orange); margin-top: 40px; }
+
+/* Sections */
+section { padding: 120px 0; background: var(--bg-dark); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.tag { color: var(--orange); font-weight: 700; font-size: 0.75rem; letter-spacing: 3px; }
+h2 { font-size: 2.8rem; margin: 20px 0; font-weight: 800; }
+.stats { display: flex; gap: 40px; margin-top: 40px; }
+.stat-item { font-weight: 700; font-size: 1.1rem; }
+
+.image-placeholder {
+    height: 500px; background: #1a1a1a; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid #222; position: relative;
+}
+
+/* Services */
+.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px; }
+.service-card {
+    background: var(--bg-surface); padding: 50px; border-radius: 4px;
+    position: relative; transition: var(--transition);
+}
+.service-card:hover { transform: translateY(-10px); background: #1f1f1f; }
+.card-accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
+.orange-bg { background: var(--orange); }
+.red-bg { background: var(--red); }
+.blue-bg { background: var(--blue); }
+
+/* Contact */
+.contact-card { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
+.contact-info { padding: 60px; }
+.contact-list { list-style: none; margin: 40px 0; }
+.contact-list li { margin-bottom: 20px; color: var(--text-dim); }
+.map-container { background: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 400px; }
+.map-link { color: var(--orange); text-decoration: none; font-size: 0.8rem; border: 1px solid var(--orange); padding: 10px 20px; margin-top: 20px; display: inline-block; }
+
+footer { padding: 60px 0; text-align: center; color: #444; font-size: 0.8rem; border-top: 1px solid #111; }
+
+@media (max-width: 768px) {
+    .grid-2, .contact-card { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    h1 { font-size: 3.5rem; }
+}
